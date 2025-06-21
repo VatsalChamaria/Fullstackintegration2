@@ -1,0 +1,14 @@
+app.MapGet("/api/productlist", (IMemoryCache cache) =>
+{
+    if (!cache.TryGetValue("productList", out List<Product> products))
+    {
+        products = GetProductList(); // Your method to fetch or generate product data
+
+        var cacheOptions = new MemoryCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+        cache.Set("productList", products, cacheOptions);
+    }
+
+    return products;
+});
